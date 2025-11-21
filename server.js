@@ -1,27 +1,26 @@
-/* Routes:
- * /api/v1/bootcamps
- * /api/v1/courses
- * /api/v1/reviews
- * /api/v1/auth
- * /api/v1/users
- */
+/**Request → Middleware 1 → Middleware 2 → Router → Controller → Response */
 //IMPORTS
 const express = require('express');
 const dotenv = require('dotenv');
+// const logger = require('./middleware/logger'); -use Morgan instead 
+const morgan = require('morgan');
 //Route files
-const bootcamps = require('./routes/bootcamps');
+const bootcamps = require('./routes/bootcamps'); 
 
-
-//Globals
+//GLOBALS
 const PORT = process.env.PORT || 5000;
 
 //Load env vars
 dotenv.config({ path: './config/config.env' });
+
 const app = express();
 
-// Mount routers
+// Always put global middleware before routes!
+// app.use(logger); 
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev')); //Dev Logging Middleware morgan
+}
 app.use('/api/v1/bootcamps', bootcamps);
-
 
 //To run server need to call listen
 app.listen(
